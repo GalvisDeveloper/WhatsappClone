@@ -17,3 +17,10 @@
 .sidebarChat__info {
   margin-left: 15px;
 }
+
+.sidebarChat{
+  border-bottom: 1px solid #f6f6f6;
+  cursor: pointer;
+  display: flex;
+  padding: 20px;
+}
