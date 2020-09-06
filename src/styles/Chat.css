@@ -36,7 +36,7 @@
   background-repeat: repeat;
   background-position: center;
   padding: 30px;
-  /* overflow: scroll; */
+  overflow: scroll;
 }
 
 .chat__message {

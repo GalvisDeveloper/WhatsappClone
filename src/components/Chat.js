@@ -4,16 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import from material-ui
-import { Avatar, IconButton } from '@material-ui/core';
+import { Avatar, IconButton, Button } from '@material-ui/core';
 import { SearchOutlined, InsertEmoticon } from '@material-ui/icons';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MicIcon from '@material-ui/icons/Mic';
-// import SendIcon from '@material-ui/icons/Send';
+import SendIcon from '@material-ui/icons/Send';
 
 // Imports from another files
 import '../styles/Chat.css';
 import db from '../firebase';
+import { useStateValue } from '../StateProvider';
+import firebase from 'firebase';
 
 function Chat() {
 
@@ -21,12 +23,9 @@ function Chat() {
     const [seed, setSeed] = useState('');
     const { roomId } = useParams();
     const [roomName, setRoomName] = useState('');
-    const sendMessage = (e) => {
-        e.preventDefault();
-        console.log("You Typed => ", input);
-
-        setInput('');
-    };
+    const [messages, setMessages] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const [{ user }, dispatch] = useStateValue();
 
     useEffect(() => {
         if (roomId) {
@@ -35,12 +34,32 @@ function Chat() {
                 .onSnapshot(snapshot => (
                     setRoomName(snapshot.data().name)
                 ));
+
+            db.collection('rooms')
+                .doc(roomId)
+                .collection('messages')
+                .orderBy('timestamp', 'asc')
+                .onSnapshot(snapshot => (
+                    setMessages(snapshot.docs.map(doc => doc.data())
+                    )
+                ));
         }
     }, [roomId]);
 
     useEffect(() => {
         setSeed(Math.floor(Math.random() * 5000));
     }, [roomId]);
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        console.log(input);
+        db.collection('rooms').doc(roomId).collection('messages').add({
+            message: input,
+            name: user.displayName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        setInput('');
+    };
 
     return (
         <div className="chat">
@@ -51,7 +70,10 @@ function Chat() {
 
                 <div className="chat__headerInfo">
                     <h3>{roomName}</h3>
-                    <p>Last seen at {}...</p>
+                    <p>
+                        Last seen at {" "}
+                        {new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()}
+                    </p>
                 </div>
 
                 <div className="chat__headerTools">
@@ -70,13 +92,17 @@ function Chat() {
             </div>
 
             {/* Chat Body */}
+            {/* message.name === user.displayName */}
             <div className="chat__body">
-                {/* message.name === user.displayName */}
-                <p className={`chat__message ${true && 'chat__receiver'}`}>
-                    <span className="chat__name"> Cristian {/*{message.name}*/}</span>
-                    Yo!
-                    <span className="chat__timestamp"> 9:10pm </span>
-                </p>
+                {messages.map((message) => (
+                    <p className={`chat__message ${message.name === user.displayName && 'chat__receiver'}`}>
+                        <span className="chat__name"> {message.name} </span>
+                        {message.message}
+                        <span className="chat__timestamp">
+                            {new Date(message.timestamp?.toDate()).toUTCString()}
+                        </span>
+                    </p>
+                ))}
             </div>
 
             {/* Chat Footer */}
@@ -100,8 +126,12 @@ function Chat() {
                     <MicIcon />
                 </IconButton>
 
+                <Button type="submit" onClick={sendMessage}>
+                    <SendIcon />
+                </Button>
+
             </div>
-        </div>
+        </div >
     );
 }
 

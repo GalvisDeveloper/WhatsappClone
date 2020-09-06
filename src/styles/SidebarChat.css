@@ -18,9 +18,14 @@
   margin-left: 15px;
 }
 
-.sidebarChat{
+.sidebarChat {
   border-bottom: 1px solid #f6f6f6;
   cursor: pointer;
   display: flex;
   padding: 20px;
+}
+
+a {
+  text-decoration: none !important;
+  color: black;
 }

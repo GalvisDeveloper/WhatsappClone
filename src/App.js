@@ -1,4 +1,5 @@
 
+
 // Import from React
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -8,40 +9,48 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
+import Login from './components/Login';
+import { useStateValue } from './StateProvider.js';
 
 // Imports from material-ui
 
 function App() {
 
+  // eslint-disable-next-line no-unused-vars
+  const [{ user }, dispatch] = useStateValue();
+
   return (
     //BEM Naming Convention
     <div className="app">
-      {/* <h1>Building WhatsApp Clone with React Js</h1> */}
+      {!user ? (
+        <Login />
+      ) : (
+          <div className="app__body">
 
-      <div className="app__body">
+            <Router>
 
-        <Router>
+              {/* SideBar */}
+              <Sidebar />
 
-          {/* SideBar */}
-          <Sidebar />
+              {/* Switch between chats */}
+              <Switch>
 
-          {/* Switch between chats */}
-          <Switch>
+                {/* Features of rooms chats, about URL */}
+                <Route path="/rooms/:roomId">
+                  <Chat />
+                </Route>
 
-            {/* Features of rooms chats, about URL */}
-            <Route path="/rooms/:roomId">
-              <Chat />
-            </Route>
+                <Route path="/">
+                  <Chat />
+                </Route>
 
-            <Route path="/">
-              <Chat />
-            </Route>
+              </Switch>
 
-          </Switch>
+            </Router>
 
-        </Router>
-
-      </div>
+          </div>
+        )
+      }
 
     </div>
   );

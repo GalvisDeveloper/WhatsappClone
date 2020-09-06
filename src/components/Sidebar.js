@@ -15,10 +15,13 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import "../styles/Siderbar.css";
 import SidebarChat from './SidebarChat';
 import db from '../firebase';
+import { useStateValue } from '../StateProvider';
 
 function Sidebar() {
 
     const [rooms, setRooms] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const [{ user }, dispatch] = useStateValue();
 
     useEffect(() => {
         const unsubscribe = db.collection('rooms').onSnapshot(snapshot => {
@@ -41,7 +44,7 @@ function Sidebar() {
 
             {/* SideBar Header */}
             <div className="siderbar__header">
-                <Avatar src="https://avatars.dicebear.com/api/avataaars/anAvatar.svg?    r=35&b=%23ededed&w=60&style=circle&top[]=shortHair&topChance=32&hatColor[]=white&hairColor[]=black&accessories[]=sunglasses&accessoriesChance=93&facialHair[]=majestic&facialHairChance=72&facialHairColor[]=black&clothes[]=hoodie&clothesColor[]=gray&eyes[]=happy&eyebrow[]=defaultValue&mouth[]=smile&skin[]=tanned" />
+                <Avatar src={user?.photoURL} />
 
                 <div className="sidebar_headerRight">
                     <IconButton>

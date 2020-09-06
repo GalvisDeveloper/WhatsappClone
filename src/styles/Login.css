@@ -1,0 +1,41 @@
+.login__container {
+  background-color: #f8f8f8;
+  display: grid;
+  height: 100vh;
+  place-items: center;
+  width: 100vw;
+}
+
+.login__google > img {
+  height: 150px;
+  margin-top: 40px;
+  object-fit: contain;
+}
+
+.login__google {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(146, 146, 146, 0.92), 0 1px 0 1px;
+  padding: 100px;
+  text-align: center;
+}
+
+.login__button {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  object-fit: contain;
+  justify-content: center;
+}
+
+.login__button > Button {
+  text-transform: inherit !important;
+  background-color: #d3d3d3 !important;
+  color: black;
+}
+
+.login__button #googleLogo {
+  padding: 10px;
+  height: 20px;
+  object-fit: contain;
+}
